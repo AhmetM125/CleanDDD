@@ -2,12 +2,23 @@
 
 public class Result
 {
-    public Result(bool v1, string v2)
+    public Result(bool isSuccess, Error error)
     {
-        V1 = v1;
-        V2 = v2;
-    }
+        if (isSuccess && error != Error.None
+            || !isSuccess && error == Error.None)
+        {
+            throw new ArgumentException("Invalid error",
+                nameof(error));
+        }
 
-    public bool V1 { get; }
-    public string V2 { get; }
+        IsSuccess = isSuccess;
+        Error = error;
+    }
+    public bool IsSuccess { get; }
+    public bool IsFailure => !IsSuccess;
+
+    public Error Error { get; }
+
+    public static Result Succes() => new Result(true, Error.None);
+    public static Result Failure(Error error) => new Result(false, error);
 }

@@ -1,13 +1,11 @@
 ﻿namespace Domain.Shared;
 
-public class Error
+public sealed record Error(string Code, string? Description = null)
 {
-    public Error(string v1, string v2)
-    {
-        V1 = v1;
-        V2 = v2;
-    }
+    public static readonly Error None = new Error("None");
 
-    public string V1 { get; }
-    public string V2 { get; }
+    public static implicit operator Result(Error error)
+        => new Result(false, error);
 }
+
+

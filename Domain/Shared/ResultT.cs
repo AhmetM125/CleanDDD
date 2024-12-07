@@ -1,15 +1,25 @@
 ﻿namespace Domain.Shared;
 
-public class Result<TItem>
-{
-    private object value;
-    private bool v;
-    private TItem Tval;
 
-    public Result(object value, bool v, TItem TVal)
+public class Result<T>
+{
+    public Result(bool isSuccess, T error)
     {
-        this.value = value;
-        this.v = v;
-        Tval = TVal;
+        if (isSuccess && error != Error.None
+            || !isSuccess && error == Error.None)
+        {
+            throw new ArgumentException("Invalid error",
+                nameof(error));
+        }
+
+        IsSuccess = isSuccess;
+        Error = error;
     }
+    public bool IsSuccess { get; }
+    public bool IsFailure => !IsSuccess;
+
+    public T Error { get; }
+
+    public static Result Succes() => new Result(true, Error.None);
+    public static Result Failure(Error error) => new Result(false, error);
 }
